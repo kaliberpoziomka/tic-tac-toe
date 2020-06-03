@@ -13,11 +13,7 @@ let DOMmanipulator = (function() {
     
     $submit.click(function(e) {
         e.preventDefault();
-        setTimeout(function() {
-            $startPage.slideUp(1000);
-        },
-            500
-        );
+        setTimeout(function() {$startPage.slideUp(1000)},500);
     })
 
 })()

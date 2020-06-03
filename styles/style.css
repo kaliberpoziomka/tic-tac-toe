@@ -175,7 +175,7 @@ header {
           justify-content: center;
 }
 
-header span {
+header div {
   font-family: "Bungee Shade";
   font-size: 50px;
   height: -webkit-fit-content;
