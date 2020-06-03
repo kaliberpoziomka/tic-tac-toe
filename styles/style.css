@@ -284,6 +284,8 @@ section .gameboard > div:nth-child(3), section .gameboard > div:nth-child(6), se
 }
 
 section h2 {
+  margin: 0;
+  padding: 0;
   position: relative;
   bottom: -40px;
   font-family: "Montserrat", Arial, Helvetica, sans-serif;

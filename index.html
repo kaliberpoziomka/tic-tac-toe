@@ -18,17 +18,17 @@
     </header>
     <section>
         <div class="gameboard">
-            <div class="field1">x</div>
-            <div class="field2">o</div>
-            <div class="field3">o</div>
-            <div class="field4">o</div>
-            <div class="field5">x</div>
-            <div class="field6">o</div>
-            <div class="field7">o</div>
-            <div class="field8">x</div>
-            <div class="field9">o</div>
+            <div class="1"></div>
+            <div class="2"></div>
+            <div class="3"></div>
+            <div class="4"></div>
+            <div class="5"></div>
+            <div class="6"></div>
+            <div class="7"></div>
+            <div class="8"></div>
+            <div class="9"></div>
         </div>
-        <h2>Winner:</h2>
+        <h2> </h2>
     </section>
     <div class="restart-button-wrap">
         <button id="restart">PLAY AGAIN!</button>
@@ -47,11 +47,11 @@
 
                     <div class="input-wrap">
                         <label for="player-one"><span>PLAYER ONE</span></label>
-                        <input type="text" name="player-one"    id="player-one" required>
+                        <input type="text" name="player-one"  placeholder="x"  id="player-one" required>
                     </div>
                     <div class="input-wrap">
                         <label for="player-two"><span>PLAYER TWO</span></label>
-                        <input type="text" name="player-two"    id="player-two" required>
+                        <input type="text" name="player-two"  placeholder="o"  id="player-two" required>
                     </div>
                 </div>
                 <div class="flex-item2">
@@ -70,6 +70,7 @@
     
     <script src="https://kit.fontawesome.com/2bb8475a75.js" crossorigin="anonymous"></script>
     <script src="scripts/jquery.js"></script>
+    <script src="scripts/pubsub.js"></script>
     <script src="scripts/script.js"></script>
 </body>
 </html>
