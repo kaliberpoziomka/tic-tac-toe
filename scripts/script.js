@@ -116,7 +116,6 @@ let GameLogic = (function() {
         if (movesArr.length == 1 ||  movesArr[movesArr.length-1] != field) {
             // push move to array of all moves on the board
             movesArr.push(field);
-            console.log("movesArr is: "+movesArr);
             
             // push moves to players moves and change player
             if (symbol == "x") {
