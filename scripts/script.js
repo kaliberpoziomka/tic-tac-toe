@@ -111,10 +111,12 @@ let GameLogic = (function() {
 
         // subscribe to the "fieldClicked" event from PubSub
     events.on("fieldClicked", function(field) {
-        // push move to array of all moves on the board
-        movesArr.push(field);
+        
         // check if player didn't click at the same field again
-        if (movesArr.length == 1 ||  movesArr[movesArr.length-2] != field) {
+        if (movesArr.length == 1 ||  movesArr[movesArr.length-1] != field) {
+            // push move to array of all moves on the board
+            movesArr.push(field);
+            console.log("movesArr is: "+movesArr);
             
             // push moves to players moves and change player
             if (symbol == "x") {
@@ -134,6 +136,7 @@ let GameLogic = (function() {
             // arrays to test against every array in winnerMoves
             let playerOneTestArr = [];
             let playerTwoTestArr = [];
+            let playerWon = false;
 
             // test playerOneMoves and playerTwoMoves against every array in winnerMoves
             winnerMoves.forEach(item => {
@@ -160,16 +163,18 @@ let GameLogic = (function() {
                 if (JSON.stringify(playerOneTestArr) == JSON.stringify(item)) {
                     events.emit("winnerFields", playerOneTestArr);
                     playerOneWinAlert();
+                    playerWon = true;
                 } else if (JSON.stringify(playerTwoTestArr) == JSON.stringify(item)) {
                     events.emit("winnerFields", playerTwoTestArr);
                     playerTwoWinAlert();
-                } else if (movesArr.length == 9 && (JSON.stringify(playerOneTestArr) != JSON.stringify(item) ||
-                JSON.stringify(playerTwoTestArr) != JSON.stringify(item))) {
-                    tieAlert();
+                    playerWon = true;
                 }
 
             });
-        } 
+            if (movesArr.length == 9 && playerWon == false) {
+                tieAlert();
+            }
+        }
     });
     
     function playerOneWinAlert() {
