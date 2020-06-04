@@ -18,6 +18,7 @@
   left: 0;
   right: 0;
   background: #333;
+  height: 100%;
 }
 
 .start .start-panel {
@@ -246,10 +247,10 @@ section .gameboard {
   height: 300px;
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: (1fr)[3];
-      grid-template-columns: repeat(3, 1fr);
-  -ms-grid-rows: (1fr)[3];
-      grid-template-rows: repeat(3, 1fr);
+  -ms-grid-columns: (100px)[3];
+      grid-template-columns: repeat(3, 100px);
+  -ms-grid-rows: (100px)[3];
+      grid-template-rows: repeat(3, 100px);
 }
 
 section .gameboard > div {
@@ -301,6 +302,7 @@ section h2 {
 html, body {
   position: relative;
   height: 100vh;
+  width: 100vw;
 }
 
 .restart-button-wrap {
