@@ -20,13 +20,13 @@ header {
 
     #tic {
         position: absolute;
-        top: 25px;
+        top: 0;
         left: 48px;
         transform: rotate(-26deg);
         transition: 0.3s linear;
 
         &:hover {
-            top: 40px;
+            top: 15px;
             left: 40px;
             transform: rotate(0deg);
         }
@@ -34,13 +34,13 @@ header {
 
     #tac {
         position: absolute;
-        top: 40px;
+        top: 15px;
         left: 150px;
     }
 
     #toe {
         position: absolute;
-        top: 85px;
+        top: 60px;
         left: 90px;
     }
 
