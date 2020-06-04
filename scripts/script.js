@@ -6,6 +6,7 @@ let DOMmanipulator = (function() {
     let $startPage = $(".start");
     let $playerOneName;
     let $playerTwoName;
+    let $h2 = $("h2");
 
     // start form movements
     $vsPlayer.click(function() {
@@ -24,19 +25,17 @@ let DOMmanipulator = (function() {
         // player names storage
         $playerOneName = $("#player-one")[0].value;
         $playerTwoName = $("#player-two")[0].value;
-        console.log($playerOneName);
-        console.log($playerTwoName);
     });
 
     // return field clicked
     let symbol = "x";
     let $gameboard = $(".gameboard");
 
+    $h2.text(`Player: ${symbol}`);
+
     $gameboard.click(function(e) {
         // field number storage
         let field = Number(e.target.classList[0]);
-        console.log(field);
-        console.log(e.target.textContent)
 
         // emit field umber to PubSub
         events.emit("fieldClicked", field);
@@ -51,22 +50,29 @@ let DOMmanipulator = (function() {
             } else {
                 symbol = "x";
             }
+            $h2.text(`Player: ${symbol}`);
+
         }
     });
 
     events.on("endGame", function(winner) {
-            if (winner == "playerOne") {
-                $("h2").text(`Winner: ${$playerOneName}`);
-            } else if (winner == "playerTwo") {
-                $("h2").text(`Winner: ${$playerTwoName}`);
-            }
-
+        if (winner == "playerOne") {
+            $h2.text(`Winner: ${$playerOneName}`);
+        } else if (winner == "playerTwo") {
+            $h2.text(`Winner: ${$playerTwoName}`);
+        }
+        $h2.css({"color": "orange"});
     });
 
     $("#restart").click(function() {
         location.reload();
     })
 
+    events.on("winnerFields", function(winnerFields) {
+        winnerFields.forEach(field => {
+            $(`.${field}`).css({"color": "orange"});
+        })
+    });
 
 })()
 
@@ -102,106 +108,71 @@ let GameLogic = (function() {
         movesArr.push(field);
         // check if player didn't click at the same field again
         if (movesArr.length == 1 ||  movesArr[movesArr.length-2] != field) {
-            console.log("You just clicked field number" + field);
             
             // push moves to players moves and change player
             if (symbol == "x") {
                 playerTwoMoves.push(field);
                 playerTwoMoves.sort();
-                console.log(playerTwoMoves);
                 symbol = "o";
             } else {
                 playerOneMoves.push(field);
                 playerOneMoves.sort();
-                console.log(playerOneMoves);
                 symbol = "x";
             }
         };
 
 
         // check if WIN!!
-        if (movesArr.length == 5 || movesArr.length == 6) {
+        if (movesArr.length > 3) {
+            // arrays to test against every array in winnerMoves
+            let playerOneTestArr = [];
+            let playerTwoTestArr = [];
+
+            // test playerOneMoves and playerTwoMoves against every array in winnerMoves
             winnerMoves.forEach(item => {
-                if (JSON.stringify(item) == JSON.stringify(playerOneMoves)) {
+                playerOneTestArr = [];
+                playerTwoTestArr = [];
+                
+                // loop through every number in current array in winnerMoves
+                for (let i = 0; i < item.length; i++) {
+                    // if numbers are the same then push number from playerOneMoves to playerOneTestArr
+                    for (let k = 0; k < playerOneMoves.length; k++) {
+                        if (item[i] == playerOneMoves[k]) {
+                            playerOneTestArr.push(playerOneMoves[k]);
+                        }
+                    }
+                    // same as above but with player two
+                    for (let j = 0; j < playerTwoMoves.length; j++) {
+                        if (item[i] == playerTwoMoves[j]) {
+                            playerTwoTestArr.push(playerTwoMoves[j]);
+                        }
+                    }
+                }
+                // if test array and winner array are the same then alert winner, you need to use 
+                // JSON.stringify because thats the way you can compare two arrays
+                if (JSON.stringify(playerOneTestArr) == JSON.stringify(item)) {
+                    events.emit("winnerFields", playerOneTestArr);
                     playerOneWinAlert();
-                } else if (JSON.stringify(item) == JSON.stringify(playerTwoMoves)) {
+                }
+                if (JSON.stringify(playerTwoTestArr) == JSON.stringify(item)) {
+                    events.emit("winnerFields", playerTwoTestArr);
                     playerTwoWinAlert();
                 }
-            })
-        } else if (movesArr.length == 7 || movesArr.length == 8) {
-            // splice player moves so they have the same lenght
-            let playerOneFirst = [...playerOneMoves];
-            playerOneFirst.splice(3, 1);
 
-            let playerTwoFirst = [...playerTwoMoves];
-            playerTwoFirst.splice(3, 1);
-
-            let playerOneLast = [...playerOneMoves];
-            playerOneLast.splice(0, 1);
-
-            let playerTwoLast = [...playerTwoMoves];
-            playerTwoLast.splice(0, 1);
-
-            winnerMoves.forEach(item => {
-                if (JSON.stringify(item) == JSON.stringify(playerOneFirst)) {
-                    playerOneWinAlert();
-                } else if (JSON.stringify(item) == JSON.stringify(playerTwoFirst)) {
-                    playerTwoWinAlert();
-                } else if (JSON.stringify(item) == JSON.stringify(playerOneLast)) {
-                    playerOneWinAlert();
-                } else if (JSON.stringify(item) == JSON.stringify(playerTwoLast)) {
-                    playerTwoWinAlert();
-                }
             });
-        } else if (movesArr.length == 9) {
-            let playerOneFirst = [...playerOneMoves];
-            playerOneFirst.splice(3, 2);
-            
-            let playerTwoFirst = [...playerTwoMoves];
-            playerTwoFirst.splice(3, 2);
-
-            let playerOneLast = [...playerOneMoves];
-            playerOneLast.splice(0, 2);
-
-            let playerTwoLast = [...playerTwoMoves];
-            playerTwoLast.splice(0, 2);
-
-            let playerOneMiddle = [...playerOneMoves];
-            playerOneMiddle.splice(0, 1);
-            playerOneMiddle.splice(3, 1);
-
-            let playerTwoMiddle = [...playerOneMoves];
-            playerTwoMiddle.splice(0, 1);
-            playerTwoMiddle.splice(3, 1);
-
-            winnerMoves.forEach(item => {
-                if (JSON.stringify(item) == JSON.stringify(playerOneFirst)) {
-                    playerOneWinAlert();
-                } else if (JSON.stringify(item) == JSON.stringify(playerTwoFirst)) {
-                    playerTwoWinAlert();
-                } else if (JSON.stringify(item) == JSON.stringify(playerOneLast)) {
-                    playerOneWinAlert();
-                } else if (JSON.stringify(item) == JSON.stringify(playerTwoLast)) {
-                    playerTwoWinAlert();
-                } else if (JSON.stringify(item) == JSON.stringify(playerOneMiddle)) {
-                    playerOneWinAlert();
-                } else if (JSON.stringify(item) == JSON.stringify(playerTwoMiddle)) {
-                    playerTwoWinAlert();
-                }
-            });
-        }
+        } 
     });
     
     function playerOneWinAlert() {
         setTimeout(function() {
             events.emit("endGame", "playerOne")
-        }, 100);
+        }, 1);
     }
 
     function playerTwoWinAlert() {
         setTimeout(function() {
             events.emit("endGame", "playerTwo")
-        }, 100);
+        }, 1);
     }
 
 })()
