@@ -64,6 +64,8 @@ let DOMmanipulator = (function() {
             $h2.text(`Winner: ${$playerOneName}`);
         } else if (winner == "playerTwo") {
             $h2.text(`Winner: ${$playerTwoName}`);
+        } else if (winner == "tie") {
+            $h2.text(`It's a Draw!`);
         }
         $h2.css({"color": "orange"});
         gameStatus = false;
@@ -158,10 +160,12 @@ let GameLogic = (function() {
                 if (JSON.stringify(playerOneTestArr) == JSON.stringify(item)) {
                     events.emit("winnerFields", playerOneTestArr);
                     playerOneWinAlert();
-                }
-                if (JSON.stringify(playerTwoTestArr) == JSON.stringify(item)) {
+                } else if (JSON.stringify(playerTwoTestArr) == JSON.stringify(item)) {
                     events.emit("winnerFields", playerTwoTestArr);
                     playerTwoWinAlert();
+                } else if (movesArr.length == 9 && (JSON.stringify(playerOneTestArr) != JSON.stringify(item) ||
+                JSON.stringify(playerTwoTestArr) != JSON.stringify(item))) {
+                    tieAlert();
                 }
 
             });
@@ -177,6 +181,11 @@ let GameLogic = (function() {
     function playerTwoWinAlert() {
         setTimeout(function() {
             events.emit("endGame", "playerTwo");
+        }, 1);
+    }
+    function tieAlert() {
+        setTimeout(function() {
+            events.emit("endGame", "tie");
         }, 1);
     }
 
