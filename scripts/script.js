@@ -30,30 +30,34 @@ let DOMmanipulator = (function() {
     // return field clicked
     let symbol = "x";
     let $gameboard = $(".gameboard");
+    // tis variable disables interactivity with gameboard when game is over
+    let gameStatus = true;
 
     $h2.text(`Player: ${symbol}`);
 
     $gameboard.click(function(e) {
-        // field number storage
-        let field = Number(e.target.classList[0]);
+        if (gameStatus == true) {
+            // field number storage
+            let field = Number(e.target.classList[0]);
 
-        // emit field umber to PubSub
-        events.emit("fieldClicked", field);
+            // emit field umber to PubSub
+            events.emit("fieldClicked", field);
 
-        // check if field already has symbol and change symbol
-        if (e.target.textContent == "") {
-            $(`.${field}`).text(symbol);
+            // check if field already has symbol and change symbol
+            if (e.target.textContent == "") {
+                $(`.${field}`).text(symbol);
 
-            // field value test
-            if (symbol == "x") {
-                symbol = "o";
-            } else {
-                symbol = "x";
+                // field value test
+                if (symbol == "x") {
+                    symbol = "o";
+                } else {
+                    symbol = "x";
+                }
+                $h2.text(`Player: ${symbol}`);
             }
-            $h2.text(`Player: ${symbol}`);
-
         }
     });
+    
 
     events.on("endGame", function(winner) {
         if (winner == "playerOne") {
@@ -62,6 +66,7 @@ let DOMmanipulator = (function() {
             $h2.text(`Winner: ${$playerTwoName}`);
         }
         $h2.css({"color": "orange"});
+        gameStatus = false;
     });
 
     $("#restart").click(function() {
@@ -165,13 +170,13 @@ let GameLogic = (function() {
     
     function playerOneWinAlert() {
         setTimeout(function() {
-            events.emit("endGame", "playerOne")
+            events.emit("endGame", "playerOne");
         }, 1);
     }
 
     function playerTwoWinAlert() {
         setTimeout(function() {
-            events.emit("endGame", "playerTwo")
+            events.emit("endGame", "playerTwo");
         }, 1);
     }
 
